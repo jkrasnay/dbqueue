@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet author="dbqueue" id="2014-12-10">
+    <comment>Create QueueMessage table</comment>
+    <createSequence sequenceName="queuemessage_id_seq"/>
+    <createTable tableName="queuemessage">
+      <column name="id" type="int" defaultValue="nextval('queuemessage_id_seq')">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="version" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="claimed" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="claimedtimestamp" type="timestamp without time zone"/>
+      <column name="createdtimestamp" type="timestamp without time zone"/>
+      <column name="deliveryattempts" type="int"/>
+      <column name="description" type="text"/>
+      <column name="errortimestamp" type="timestamp without time zone"/>
+      <column name="errormessage" type="text"/>
+      <column name="payload" type="text"/>
+      <column name="priority" type="int"/>
+      <column name="processafter" type="timestamp without time zone"/>
+      <column name="queuename" type="text"/>
+      <column name="stacktrace" type="text"/>
+      <column name="status" type="text"/>
+    </createTable>
+  </changeSet>
+
+</databaseChangeLog>
