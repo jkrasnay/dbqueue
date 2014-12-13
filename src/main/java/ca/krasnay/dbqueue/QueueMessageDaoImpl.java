@@ -85,7 +85,7 @@ public class QueueMessageDaoImpl implements QueueMessageDao {
 
     @Override
     public QueueMessage insert(QueueMessage queueMessage) {
-        log.info("inserting message into queue '%s'", queueMessage.getQueueName());
+        log.info("inserting message into queue '{}'", queueMessage.getQueueName());
         mapping.insert(queueMessage);
         return queueMessage;
     }

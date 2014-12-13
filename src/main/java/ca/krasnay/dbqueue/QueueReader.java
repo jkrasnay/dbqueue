@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -105,9 +104,9 @@ public abstract class QueueReader implements InitializingBean, DisposableBean {
      */
     private int maxRetries = 0;
 
-    private QueueMessageDao queueMessageDao;
+    private final QueueMessageDao queueMessageDao;
 
-    private String queueName;
+    private final String queueName;
 
     private int retryWaitSeconds = 60;
 
@@ -118,10 +117,17 @@ public abstract class QueueReader implements InitializingBean, DisposableBean {
 
     private ExecutorService executorService;
 
-    private PlatformTransactionManager transactionManager;
+    private final PlatformTransactionManager transactionManager;
 
-    public QueueReader(String queueName) {
+    public QueueReader(String queueName,
+            QueueMessageDao queueMessageDao,
+            PlatformTransactionManager transactionManager,
+            ExecutorService threadPool) {
+
         this.queueName = queueName;
+        this.queueMessageDao = queueMessageDao;
+        this.transactionManager = transactionManager;
+        this.executorService = threadPool;
     }
 
     @Override
@@ -222,11 +228,6 @@ public abstract class QueueReader implements InitializingBean, DisposableBean {
         this.delay = delay;
     }
 
-    @Required
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
     public void setInitialDelay(int initialDelay) {
         this.initialDelay = initialDelay;
     }
@@ -235,18 +236,8 @@ public abstract class QueueReader implements InitializingBean, DisposableBean {
         this.maxRetries = maxRetries;
     }
 
-    @Required
-    public void setQueueMessageDao(QueueMessageDao queueMessageDao) {
-        this.queueMessageDao = queueMessageDao;
-    }
-
     public void setRetryWaitSeconds(int retryWaitSeconds) {
         this.retryWaitSeconds = retryWaitSeconds;
-    }
-
-    @Required
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
     }
 
 }
