@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.krasnay.sqlbuilder.Supplier;
 import ca.krasnay.sqlbuilder.orm.Mapping;
 import ca.krasnay.sqlbuilder.orm.OptimisticLockException;
 import ca.krasnay.sqlbuilder.orm.OrmConfig;
@@ -20,11 +21,17 @@ public class QueueMessageDaoImpl implements QueueMessageDao {
 
     private Mapping<QueueMessage> mapping;
 
+    private Supplier<Integer> sequence;
+
     public QueueMessageDaoImpl(OrmConfig ormConfig) {
+
         mapping = new Mapping<QueueMessage>(ormConfig, QueueMessage.class, "QueueMessage")
         .setIdColumn("id")
         .setVersionColumn("version")
         .addFields();
+
+        sequence = ormConfig.getSequence("queuemessage_id_seq");
+
     }
 
     @Override
@@ -35,8 +42,8 @@ public class QueueMessageDaoImpl implements QueueMessageDao {
             // TODO this might be a problem with a very large backlog
             // However, we would need a limit clause on the createQuery()
 
-            List<QueueMessage> messages = mapping.createQuery()
-            .where(eq("queueName", queueName))
+            List<QueueMessage> messages = mapping
+            .findWhere(eq("queueName", queueName))
             .and("status = 'PENDING'")
             .and("not claimed")
             .and("(processAfter is null or processAfter < current_timestamp)")
@@ -85,7 +92,8 @@ public class QueueMessageDaoImpl implements QueueMessageDao {
 
     @Override
     public QueueMessage insert(QueueMessage queueMessage) {
-        log.info("inserting message into queue '{}'", queueMessage.getQueueName());
+        queueMessage.setId(sequence.get());
+        log.info("inserting message {} into queue '{}'", queueMessage.getId(), queueMessage.getQueueName());
         mapping.insert(queueMessage);
         return queueMessage;
     }

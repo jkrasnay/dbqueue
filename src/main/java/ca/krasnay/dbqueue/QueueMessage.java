@@ -195,6 +195,10 @@ public class QueueMessage {
         this.errorTimestamp = errorTimestamp;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setPayload(String payload) {
         this.payload = payload;
     }
