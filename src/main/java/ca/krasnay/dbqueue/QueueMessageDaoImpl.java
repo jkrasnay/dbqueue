@@ -72,21 +72,21 @@ public class QueueMessageDaoImpl implements QueueMessageDao {
     }
 
     public void delete(QueueMessage queueMessage) {
-        log.info("deleting message %d from queue %s", queueMessage.getId(), queueMessage.getQueueName());
+        log.info("deleting message {} from queue {}", queueMessage.getId(), queueMessage.getQueueName());
         mapping.deleteById(queueMessage.getId());
     }
 
     @Override
     public void delete(List<Integer> ids) {
         for (int id : ids) {
-            log.info("deleting message %d", id);
+            log.info("deleting message {}", id);
             mapping.deleteById(id);
         }
     }
 
     @Override
     public QueueMessage findById(int id) {
-        log.info("finding message %d", id);
+        log.info("finding message {}", id);
         return mapping.findById(id);
     }
 
@@ -99,7 +99,7 @@ public class QueueMessageDaoImpl implements QueueMessageDao {
     }
 
     public QueueMessage update(QueueMessage queueMessage) {
-        log.info("updating message %d in queue %s", queueMessage.getId(), queueMessage.getQueueName());
+        log.info("updating message {} in queue {}", queueMessage.getId(), queueMessage.getQueueName());
         return mapping.update(queueMessage);
     }
 

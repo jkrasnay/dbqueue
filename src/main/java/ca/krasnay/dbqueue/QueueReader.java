@@ -69,7 +69,7 @@ public abstract class QueueReader implements InitializingBean, DisposableBean {
                             log.warn(String.format("Message %d in queue %s failed, will retry in %d seconds", queueMessage.getId(), queueMessage.getQueueName(), retryWaitSeconds), e);
                             queueMessage.setProcessAfter(Period.seconds(retryWaitSeconds));
                         } else {
-                            log.error(String.format("Message % in queue %s permanently failed", queueMessage.getQueueName(), queueMessage.getId()), e);
+                            log.error(String.format("Message %d in queue %s permanently failed", queueMessage.getId(), queueMessage.getQueueName()), e);
                             onFinalError(e, queueMessage);
                             queueMessage.setStatus(QueueMessage.Status.FAILED);
                         }
